@@ -63,7 +63,7 @@ describe(Dealership) do
   describe("#add_vehicle") do
     it("adds a new vehicle to a dealership") do
       test_dealership = Dealership.new("Bob's Used Cars")
-      test_vehicle = Vehicle.new("Toyota", "Prius", 2000)
+      test_vehicle = Vehicle.new(:make=> "Toyota", :model => "Prius", :year => "2000", :color => "blue", :engine_size => "4L", :number_of_doors => "4")
       test_dealership.add_vehicle(test_vehicle)
       expect(test_dealership.cars()).to(eq([test_vehicle]))
     end
