@@ -11,6 +11,20 @@ def create_a_dealership(name)
   click_link('view all dealerships')
 end
 
+def create_a_dealership_loop (name)
+  visit('/dealerships/new')
+  fill_in('name', :with => name)
+  click_button('Add Dealership')
+end
+
+def create_a_car_in_dealership_loop(name, make, model, year, color, engine_size, number_of_doors)
+  visit("/dealerships")
+  click_link(name)
+  click_link("Add a new vehicle")
+  create_car(make, model, year, color, engine_size, number_of_doors)
+  click_button("Add Vehicle")
+end
+
 def create_car(make, model, year, color, engine_size, number_of_doors)
   fill_in('make', :with => make)
   fill_in('model', :with => model)
@@ -25,6 +39,7 @@ def expect_page(arr)
     expect(page).to have_content(element)
   end
 end
+
 describe("viewing the root path", {:type => :feature}) do
   it('renders the index view') do
     visit('/')
@@ -48,9 +63,7 @@ describe("viewing the root path", {:type => :feature}) do
     click_link('Add New Dealership')
     fill_in('name', :with => "Bob's Dealership")
     click_button('Add Dealership')
-    expect(page).to have_content("Success!")
-    expect(page).to have_content("go home")
-    expect(page).to have_content("view all dealerships")
+    expect_page(["Success!", "go home", "view all dealerships"])
   end
 
   it('creates a dealership and looks at it') do
@@ -83,5 +96,15 @@ describe("viewing the root path", {:type => :feature}) do
     click_button('Add Vehicle')
     expect_page(["Success!", "go home", "view all dealerships"])
   end
+
+  it("add a dealership and then add a car to that dealership") do
+    create_a_dealership_loop("Matt's Dealership")
+    create_a_car_in_dealership_loop("Matt's Dealership", "Audi", "A3", "2013", "silver", "2.0L", "4")
+    create_a_car_in_dealership_loop("Matt's Dealership", "volkswagon", "jetta TDI", "2002", "blue", "2.0L", "4")
+    visit("/dealerships")
+    click_link("Matt's Dealership")
+    expect_page(["Here are all the cars in this dealership:", "Audi A3 2013", "volkswagon jetta TDI 2002"])
+  end
+
 
 end
